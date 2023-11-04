@@ -20,7 +20,5 @@
 !configs/certs/gitlab.mydomain.com.key
 !configs/certs/README.md
 !configs/post-configuration.sh
-!configs/nginx/
-!configs/nginx/default.conf
 !configs/additional-configs.md
 !configs/backup-and-restore.md
