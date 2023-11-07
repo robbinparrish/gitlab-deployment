@@ -38,3 +38,5 @@ docker-compose exec -it gitlab-server grep 'Password:' /etc/gitlab/initial_root_
 [Additional Configuration](./configs/additional-configs.md)
 
 [Backup and Restore](./configs/backup-and-restore.md)
+
+[Runner Setup](./runner-setup-configs/README.md)

@@ -9,9 +9,9 @@
 ## Navigate to the `Admin Area -> Settings` for modifying system-wide settings.
 
 ### General Settings.
-- In Visibility and access controls.
+- Visibility and access controls.
 	- Default project creation protection - `Maintainers`
-- In Account and limit.
+- Account and limit.
 	- Session duration (minutes) - `1440`
 - Sign-up restrictions.
 	- `Disable` Sign-up enabled.

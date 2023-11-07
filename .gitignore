@@ -22,3 +22,8 @@
 !configs/post-configuration.sh
 !configs/additional-configs.md
 !configs/backup-and-restore.md
+!runner-setup-configs
+!runner-setup-configs/README.md
+!runner-setup-configs/configs
+!runner-setup-configs/configs/config.toml
+!runner-setup-configs/docker-compose.yml
