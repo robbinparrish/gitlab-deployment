@@ -1,0 +1,13 @@
+#
+# docker-compose file for deploying GitLab Runner in Docker.
+#
+
+version: '3.8'
+services:
+  gitlab-runner:
+    image: 'gitlab/gitlab-runner:v16.9.0'
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - './configs:/etc/gitlab-runner'
+    network_mode: "bridge"

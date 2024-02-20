@@ -1,0 +1,5 @@
+[Unit]
+Description=GitLab Deployment Backup
+
+[Service]
+ExecStart=/usr/bin/gitlab-deployment-backup.sh

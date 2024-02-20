@@ -1,0 +1,130 @@
+#
+# docker-compose file for deploying GitLab in Docker.
+#
+
+version: '3.8'
+services:
+  gitlab-server:
+    image: gitlab/gitlab-ce:16.9.0-ce.0
+    container_name: gitlab-server
+    hostname: gitlab.mydomain.com
+    environment:
+      TZ: UTC
+      GITLAB_POST_RECONFIGURE_SCRIPT: /mnt/custom-config/post-configuration.sh
+      GITLAB_OMNIBUS_CONFIG: |
+
+        # NGINX configurations.
+        letsencrypt['enable'] = false
+        nginx['redirect_http_to_https'] = true
+        nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.mydomain.com.crt"
+        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.mydomain.com.key"
+        external_url 'https://gitlab.mydomain.com'
+
+        # Feature configurations.
+        gitlab_rails['gitlab_default_projects_features_issues'] = true
+        gitlab_rails['gitlab_default_projects_features_merge_requests'] = true
+        gitlab_rails['gitlab_default_projects_features_wiki'] = true
+        gitlab_rails['gitlab_default_projects_features_snippets'] = true
+        gitlab_rails['gitlab_default_projects_features_builds'] = true
+        gitlab_rails['gitlab_default_projects_features_container_registry'] = true
+        gitlab_rails['lfs_enabled'] = true
+        gitlab_rails['lfs_storage_path'] = "/var/opt/gitlab/gitlab-rails/shared/lfs-objects"
+
+        # Pages configurations.
+        gitlab_pages['enable'] = true
+        gitlab_pages['namespace_in_path'] = true
+        gitlab_pages['access_control'] = true
+        gitlab_pages['auth_scope'] = "read_api"
+        # DO NOT REPLACE 'projects.', its default.
+        gitlab_pages['auth_redirect_uri'] = "https://projects.gitlab-pages.mydomain.com/auth"
+        gitlab_rails['pages_path'] = "/var/opt/gitlab/gitlab-rails/shared/pages"
+        pages_external_url "https://gitlab-pages.mydomain.com/"
+        pages_nginx['enable'] = true
+        pages_nginx['listen_https'] = true
+        pages_nginx['redirect_http_to_https'] = true
+        pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.mydomain.com.crt"
+        pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.mydomain.com.key"
+
+        # Docker registry configurations.
+        gitlab_rails['registry_enabled'] = true
+        gitlab_rails['registry_host'] = "gitlab-registry.mydomain.com"
+        gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
+        registry_external_url 'https://gitlab-registry.mydomain.com'
+        registry_nginx['redirect_http_to_https'] = true
+        registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.mydomain.com.crt"
+        registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.mydomain.com.key"
+
+        # Logging configurations.
+        logging['svlogd_size'] = 50 * 1024 * 1024
+        logging['svlogd_num'] = 30
+        logging['svlogd_timeout'] = 24 * 60 * 60
+        logging['svlogd_filter'] = "gzip"
+        logging['logrotate_frequency'] = "daily"
+        logging['logrotate_maxsize'] = 50 * 1024 * 1024
+        logging['logrotate_size'] = 50 * 1024 * 1024
+        logging['logrotate_rotate'] = 30
+        logging['logrotate_compress'] = "compress"
+        logging['logrotate_method'] = "copytruncate"
+        logging['logrotate_dateformat'] = "-%Y%m%d-%s"
+
+        # Email configurations.
+        # gitlab_rails['smtp_enable'] = true
+        # gitlab_rails['gitlab_email_from'] = 'gitlab@gitlab.mydomain.com'
+        # gitlab_rails['smtp_address'] = "smtp.mydomain.com"
+        # gitlab_rails['smtp_port'] = 587
+        # gitlab_rails['smtp_user_name'] = "gitlab@gitlab.mydomain.com"
+        # gitlab_rails['smtp_password'] = "SMTP_PASSWORD"
+        # gitlab_rails['smtp_domain'] = "gitlab.mydomain.com"
+        # gitlab_rails['smtp_authentication'] = "login"
+        # gitlab_rails['smtp_enable_starttls_auto'] = true
+        # gitlab_rails['smtp_tls'] = true
+
+        # Job Artifacts.
+        gitlab_rails['artifacts_enabled'] = true
+        gitlab_rails['artifacts_path'] = "/var/opt/gitlab/gitlab-rails/shared/artifacts"
+
+        # Common configurations.
+        gitlab_rails['time_zone'] = 'UTC'
+        gitlab_rails['gitlab_username_changing_enabled'] = false
+        gitlab_rails['gitlab_default_theme'] = 2
+        gitlab_rails['incoming_email_enabled'] = false
+        gitlab_rails['usage_ping_enabled'] = false
+        gitlab_rails['manage_backup_path'] = true
+        gitlab_rails['backup_path'] = "/var/opt/gitlab/backups"
+        gitlab_rails['backup_archive_permissions'] = 0644
+
+        # Plantuml Server configurations.
+        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml-server:8080/; \n}\n"
+        gitlab_rails['env'] = { 'PLANTUML_ENCODING' => 'deflate' }
+
+    ports:
+      - 80:80
+      - 443:443
+      - 22:22
+    volumes:
+      - ./gitlab-data/config:/etc/gitlab
+      - ./gitlab-data/logs:/var/log/gitlab
+      - ./gitlab-data/data:/var/opt/gitlab
+      - ./gitlab-artifacts-data/artifacts:/var/opt/gitlab/gitlab-rails/shared/artifacts
+      - ./configs/certs:/etc/gitlab/ssl/
+      - ./configs:/mnt/custom-config
+    shm_size: 256m
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    links:
+      - plantuml-server
+
+  plantuml-server:
+    image: plantuml/plantuml-server:jetty-v1.2023.13
+    container_name: plantuml-server
+    hostname: plantuml-server
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
