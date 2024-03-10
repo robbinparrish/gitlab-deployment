@@ -54,3 +54,4 @@ docker-compose exec -it gitlab-server gitlab-rake gitlab:uploads:check
 
 #### Once Backup is restored login to the GitLab instance and verify that all configurations and data are restored.
 
+[Automatic Backup Setup](./automatic-backup/README.md)
