@@ -21,5 +21,5 @@ cp gitlab-deployment-backup.timer gitlab-deployment-backup.service /etc/systemd/
 ## Enable the timer.
 ```bash
 systemctl daemon-reload
-systemctl enable gitlab-deployment-backup.timer
+systemctl enable --now gitlab-deployment-backup.timer
 ```
