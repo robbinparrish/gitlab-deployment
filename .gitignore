@@ -28,6 +28,7 @@
 !configs/automatic-backup/
 !configs/automatic-backup/gitlab-deployment-backup.*
 !configs/automatic-backup/README.md
+!configs/use-image-from-private-registry.md
 !runner-setup-configs
 !runner-setup-configs/README.md
 !runner-setup-configs/configs
