@@ -9,6 +9,7 @@
 - https://about.gitlab.com/update/
 - https://hub.docker.com/r/gitlab/gitlab-ce/tags
 - https://hub.docker.com/r/gitlab/gitlab-runner/tags
+- https://hub.docker.com/r/plantuml/plantuml-server/tags
 
 Once the latest released version is identified we can update the corresponding version in their respective `docker-compose.yml` files.
 </br>[GitLab Server](./../docker-compose.yml)

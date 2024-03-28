@@ -70,4 +70,3 @@ docker-compose exec -it gitlab-server grep 'Password:' /etc/gitlab/initial_root_
 [Use Image From Private Registry](./configs/use-image-from-private-registry.md)
 
 [Known Issues](./configs/known-issues.md)
-  

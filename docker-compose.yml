@@ -5,7 +5,7 @@
 version: '3.8'
 services:
   gitlab-server:
-    image: gitlab/gitlab-ce:16.9.0-ce.0
+    image: gitlab/gitlab-ce:16.10.1-ce.0
     container_name: gitlab-server
     hostname: gitlab.mydomain.com
     environment:
@@ -119,7 +119,7 @@ services:
       - plantuml-server
 
   plantuml-server:
-    image: plantuml/plantuml-server:jetty-v1.2023.13
+    image: plantuml/plantuml-server:jetty-v1.2024.3
     container_name: plantuml-server
     hostname: plantuml-server
     restart: always
